@@ -117,6 +117,71 @@ Type* Parser::parseString(std::string str)
 				 throw(SyntaxException());
 			 }
 		 }
+		else if (str.substr(0, 3) == "del")
+		{
+			str.erase(0, 3);
+			Helper::trim(str);
+			if (isLegalVarName(str))
+			{
+				Type* object = getVariableValue(str);
+				if (object)
+				{
+					if (object->isPrintable())
+					{
+						if (object->toString()[0] == '[')
+						{
+							std::vector<std::string> vectNames;
+
+							for (auto itr = _variables.begin(); itr != _variables.end(); itr++)
+							{
+								if (itr->second)
+								{
+									if (itr->first == str)
+									{
+										for (auto secItr = _variables.begin(); secItr != _variables.end(); secItr++)
+										{
+											if (itr != secItr && secItr->second == itr->second)
+											{
+												secItr->second = NULL;
+												vectNames.push_back(secItr->first);
+											}
+										}
+									}
+								}
+							}
+							for (int i = 0; i < vectNames.size(); i++)
+							{
+								
+								if (_variables[vectNames[i]])
+								{
+									delete _variables[vectNames[i]];
+								}
+								_variables.erase(vectNames[i]);
+							}
+						}
+						_variables.erase(str);
+						return new Void(true);
+					}
+					else
+					{
+						throw(NameErrorException(str));
+					}
+				}
+				else
+				{
+					throw(NameErrorException(str));
+				}
+			}
+			else
+			{
+				throw(SyntaxException());
+			}
+		}
+		else
+		{
+			 throw(SyntaxException());
+		}
+	}
 
 	return NULL;
 }
