@@ -34,6 +34,48 @@ Type* Parser::parseString(std::string str)
 				throw(NameErrorException(str));
 			}
 		}
+		else if (str.substr(0, 5) == "type(" && str[str.length() - 1] == ')')
+		 {
+			 str.erase(0, 5);
+			 str.pop_back();
+			 Type* object = parseString(str);
+			 if ( object!=NULL)
+			 {
+				 if (object->isPrintable())
+				 {
+					 if (object->toString()[0] == '[' && object->toString()[object->toString().length() - 1] == ']')
+					 {
+						 std::cout << "<type 'list'>" << std::endl;
+						 return new Void(true);
+					 }
+					 if ((object->toString()[0] == '"' && object->toString()[object->toString().length() - 1] == '"') || (object->toString()[0] == (char)39 && object->toString()[object->toString().length() - 1] == (char)39))
+					 {
+						 std::cout << "<type 'str'>" << std::endl;
+						 return new Void(true);
+					 }
+					 if (object->toString() == "True" || object->toString() == "False")
+					 {
+						 std::cout << "<type 'bool'>" << std::endl;
+						 return new Void(true);
+					 }
+					 std::cout << "<type 'int'>" << std::endl;
+					 return new Void(true);
+				 }
+				 else
+				 {
+					 throw(SyntaxException());
+				 }
+			 }
+			 else
+			 {
+				 throw(SyntaxException());
+			 }
+		 }
+
+	return NULL;
+}
+
+
 Type* Parser::getType(std::string str)
 {
 	Helper::trim(str);
