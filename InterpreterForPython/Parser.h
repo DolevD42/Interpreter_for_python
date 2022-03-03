@@ -19,4 +19,5 @@ class Parser
 {
 public:
     static Type* parseString(std::string str);
+    static Type* getType(std::string str);
 };
