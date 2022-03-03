@@ -47,6 +47,10 @@ int main(int argc, char** argv)
 		{
 			std::cout << e.what() << std::endl;
 		}
+		catch (TypeException e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 		// get new command from user
 		std::cout << ">>> ";
 		std::getline(std::cin, input_string);

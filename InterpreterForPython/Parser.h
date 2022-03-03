@@ -2,6 +2,7 @@
 #include "IndentationException.h"
 #include "SyntaxException.h"
 #include "NameErrorException.h"
+#include "TypeException.h"
 #include "Type.h"
 #include "String.h"
 #include "Void.h"

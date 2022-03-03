@@ -90,6 +90,36 @@ Type* Parser::getType(std::string str)
 	}
 	return NULL;
 }
+
+void Parser::cleanMemory()
+{
+	for (auto itr = _variables.begin(); itr != _variables.end(); itr++)
+	{
+		if (itr->second)
+		{
+			if (itr->second->toString()[0] == '[' && itr->second->toString()[itr->second->toString().length() - 1] == ']')
+			{
+				for (auto secItr = _variables.begin(); secItr != _variables.end(); secItr++)
+				{
+					if (itr != secItr && secItr->second == itr->second)
+					{
+						secItr->second = NULL;
+					}
+				}
+			}
+		}
+	}
+	for (auto itr = _variables.begin(); itr != _variables.end(); itr++)
+	{
+		if (itr->second)
+		{
+			delete itr->second;
+		}
+	}
+	_variables.clear();
+}
+
+
 bool Parser::isLegalVarName(std::string str)
 {
 	for (int i = 0; i < str.length(); i++)
