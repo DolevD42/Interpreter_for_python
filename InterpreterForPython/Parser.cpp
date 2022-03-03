@@ -2,6 +2,8 @@
 #include <iostream>
 
 
+std::unordered_map<std::string, Type*> Parser::_variables = {};
+
 Type* Parser::parseString(std::string str)
 {
 	if (str[0] == ' ' || str[0] == '	')
@@ -66,3 +68,39 @@ Type* Parser::getType(std::string str)
 	}
 	return NULL;
 }
+bool Parser::isLegalVarName(std::string str)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (i == 0 && Helper::isDigit(str[0]))
+		{
+			return false;
+		}
+		if (!Helper::isDigit(str[i]) && !Helper::isLetter(str[i]) && !Helper::isUnderscore(str[i]))
+		{
+			return false;
+		}
+	}
+	if (str == "False" || str == "True")
+	{
+		return false;
+	}
+	return true;
+}
+
+Type* Parser::getVariableValue(std::string str)
+{
+	if (_variables.find(str) == _variables.end())
+	{
+		return NULL;
+	}
+	for (auto itr = _variables.begin(); itr != _variables.end(); itr++)
+	{
+		if (itr->first == str)
+		{
+			return itr->second;
+		}
+	}
+}
+
+
