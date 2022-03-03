@@ -88,6 +88,61 @@ bool Parser::isLegalVarName(std::string str)
 	return true;
 }
 
+bool Parser::makeAssignment(std::string str)
+{
+	if (str.find("=") == std::string::npos)
+	{
+		return false;
+	}
+	int index = str.find("=");
+	std::string name = str.substr(0, index);
+	std::string value = str.substr(index + 1, str.length() - index - 1);
+	Helper::trim(name);
+	Helper::trim(value);
+	if (!isLegalVarName(name))
+	{
+		throw(SyntaxException());
+	}
+	Type* object = getType(value);
+	if (object == NULL)
+	{
+		if (isLegalVarName(value))
+		{
+			Type* object = getVariableValue(value);
+			if (object != NULL)
+			{
+				object->setTemp(false);
+				std::string objectString = object->toString();
+				if (objectString[0] == '[')
+				{
+					_variables[name] = object;
+				}
+				else
+				{
+					Type* newObject = getType(objectString);
+					_variables[name] = newObject;
+				}
+				
+			}
+			else
+			{
+				throw(NameErrorException(value));
+			}
+		}
+		else
+		{
+			throw(SyntaxException());
+		}
+	}
+	else
+	{
+		object->setTemp(false);
+		_variables[name] = object;
+	}
+	return true;
+
+}
+
 Type* Parser::getVariableValue(std::string str)
 {
 	if (_variables.find(str) == _variables.end())
