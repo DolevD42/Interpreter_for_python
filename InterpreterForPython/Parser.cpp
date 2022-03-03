@@ -71,6 +71,52 @@ Type* Parser::parseString(std::string str)
 				 throw(SyntaxException());
 			 }
 		 }
+		else if (str.substr(0,4) == "len(" && str[str.length()-1] == ')')
+		 {
+			 str.erase(0, 4);
+			 str.pop_back();
+			 Type* object = parseString(str);
+			 if (object != NULL)
+			 {
+				 if (object->isPrintable())
+				 {
+					 if (object->toString()[0] == '[' && object->toString()[object->toString().length() - 1] == ']')
+					 {
+						 std::string objStr = object->toString();
+						 int lastPlace = -1;
+						 int numberOfTimes = 0;
+						 if (objStr.length() != 0)
+						 {
+							 objStr += ",";
+						 }
+						 lastPlace = objStr.find(",");
+						 while (lastPlace != std::string::npos)
+						 {
+							 numberOfTimes++;
+							 lastPlace = objStr.find(",", lastPlace + 1);
+						 }
+						 return getType(std::to_string(numberOfTimes));
+					 }
+					 if ((object->toString()[0] == '"' && object->toString()[object->toString().length() - 1] == '"') || (object->toString()[0] == (char)39 && object->toString()[object->toString().length() - 1] == (char)39))
+					 {
+						 return getType(std::to_string(object->toString().length() - 2));
+					 }
+					 if (object->toString() == "True" || object->toString() == "False")
+					 {
+						 throw(TypeException("bool", "len"));
+					 }
+					 throw(TypeException("int", "len"));
+				 }
+				 else
+				 {
+					 throw(SyntaxException());
+				 }
+			 }
+			 else
+			 {
+				 throw(SyntaxException());
+			 }
+		 }
 
 	return NULL;
 }
