@@ -21,9 +21,29 @@ int main(int argc, char** argv)
 		// parsing command
 		try
 		{
+			Type* Object = Parser::parseString(input_string);
+			if (Object)
+			{
+				if (Object->isPrintable())
+				{
+					std::cout << Object->toString() << std::endl;
+				}
+				if (Object->getTemp() == true)
+				{
+					delete Object;
+				}
+			}
 			
 		}
 		catch (IndentationException e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		catch (SyntaxException e)
+		{
+			std::cout << e.what() << std::endl;
+		}
+		catch (NameErrorException e)
 		{
 			std::cout << e.what() << std::endl;
 		}
