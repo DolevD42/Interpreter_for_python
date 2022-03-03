@@ -12,6 +12,28 @@ Type* Parser::parseString(std::string str)
 	}
 	if (str.length() > 0)
 	{
+		Helper::rtrim(str);
+		Type* Object = getType(str);
+		 if (Object != NULL)
+		{
+			return Object;
+		}
+		else if(makeAssignment(str))
+		{
+			return new Void(true);
+		}
+		else if (isLegalVarName(str))
+		{
+			Type* Object = getVariableValue(str);
+			if (Object != NULL)
+			{
+				return Object;
+			}
+			else
+			{
+				throw(NameErrorException(str));
+			}
+		}
 Type* Parser::getType(std::string str)
 {
 	Helper::trim(str);
